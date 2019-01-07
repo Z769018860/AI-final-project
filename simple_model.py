@@ -80,18 +80,34 @@ def my_simple_model():
         my_result=[]
         last_v=0
         last_a=0
+        last_t=0
         training_count=0
         for a in dic['attributes']:
             for t in dic['times']:
-                if t<a :
-                    #if i<len(dic['values']):
+                if last_t>0 and last_t<a:
+                    if t<a and t>last_t:
+                        #if i<len(dic['values']):
                         #if dic['values'][i]>a:
-                    for v in dic ['values']:
-                        if v>last_v and v>a:    #my_result.append([t,a,v])
-                            my_result.append([t,a,v])
-                            last_v=v
-                            last_a=a
-                            break
+                        for v in dic ['values']:
+                            if v>last_v and v>a:    #my_result.append([t,a,v])
+                                my_result.append([t,a,v])
+                                last_v=v
+                                last_a=a
+                                break
+                    else:
+                        last_t=t
+                else:
+                    if t<a:
+                            #if i<len(dic['values']):
+                        #if dic['values'][i]>a:
+                        for v in dic ['values']:
+                            if v>last_v and v>a:    #my_result.append([t,a,v])
+                                my_result.append([t,a,v])
+                                last_v=v
+                                last_a=a
+                                break
+                    else:
+                        last_t=t
                         #print("value:",dic['values'][i])
                         #i+=1
         result.append(my_result)
