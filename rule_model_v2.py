@@ -48,7 +48,11 @@ with tf.name_scope("F1"):
        self.F1 = (2 * self.precision * self.recall) / (self.precision + self.recall)
 '''
 #-----------------------------------------------------------------------
-
+#################################
+import io
+#import sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+#################################
 #-----------------------------------my lod data--------------------------------
 # How to load training data in Python:
 import json
@@ -108,9 +112,18 @@ def my_simple_model():
     rule1_pass=0
     rule2_pass=0
     other_pass=0
-    for dic in sentence_list[:]:  
-    #for j in range(0,3000):
+    #for dic in sentence_list[:]:  
+    for j in range(3000):
+        dic = sentence_list[j];
         my_result=[]
+        res_times = [a[0] for a in dic['results']]
+        res_attrs = [a[1] for a in dic['results']]
+        res_values = [a[2] for a in dic['results']]
+        dic['attributes'] = sorted([a for a in dic['attributes'] if a in res_attrs])
+        dic['times'] = sorted([a for a in dic['times'] if a in res_times])
+        dic['values'] = sorted([a for a in dic['values'] if a in res_values])
+        #####
+        #####
         #获得每个的元素个数，从而应用规则
         a_n=len(dic['attributes'])
         t_n=len(dic['times'])
@@ -177,6 +190,11 @@ def my_simple_model():
                 other_pass+=1
 
         result.append(my_result)
+        if sorted(my_result)!=sorted(dic['results']):
+          print(j)
+          print("times:",dic['times'])
+          print("attributes:",dic['attributes'])
+          print("values:",dic['values'])
 
     print("rule1 total:",rule1_count,"\nrule1 pass:",rule1_pass," \nrule2 total:",rule2_count,"\nrule2 pass:",rule2_pass,"\nother total:",3000-rule1_count-rule2_count,"\nother pass:",other_pass)
     return result
@@ -191,7 +209,7 @@ my_result=my_simple_model()
 
 def my_predict(refdata,mydata):
     passcount=0
-    f = open (r'E:/school/computer/人工智能/project/rule_out.txt','w')
+    f = open (r'rule_out.txt','w',encoding='utf-8')
 
     for count in range(len(mydata)):
         if sorted(refdata[count])==sorted(mydata[count]):
@@ -199,8 +217,18 @@ def my_predict(refdata,mydata):
             passcount+=1
         else:
             print("[%d]ERROR!!!!" % count,file=f)
+            print(sentence_list[count]['sentence'],file=f)#####
             print("[reference]\n" ,refdata[count],file=f)
+            ###
+            word = sentence_list[count]['words']
+            for result in refdata[count]:
+              print(word[result[0]]+', '+word[result[1]]+', '+word[result[2]],file=f)
+            ###
             print("[result]\n",mydata[count],file=f)
+            ###
+            for result in mydata[count]:
+              print(word[result[0]]+', '+word[result[1]]+', '+word[result[2]],file=f)
+            ###
             print("\n",file=f)
     
     print("%d"%passcount,"/3000 PASS!!!!!!\n",file=f)
