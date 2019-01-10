@@ -118,12 +118,12 @@ def my_simple_model():
     for j in range(3000):
         dic = sentence_list[j];
         my_result=[]
-        res_times = [a[0] for a in dic['results']]
-        res_attrs = [a[1] for a in dic['results']]
-        res_values = [a[2] for a in dic['results']]
-        dic['attributes'] = sorted([a for a in dic['attributes'] if a in res_attrs])
-        dic['times'] = sorted([a for a in dic['times'] if a in res_times])
-        dic['values'] = sorted([a for a in dic['values'] if a in res_values])
+        #res_times = [a[0] for a in dic['results']]
+        #res_attrs = [a[1] for a in dic['results']]
+        #res_values = [a[2] for a in dic['results']]
+        dic['attributes'] = sorted(dic['attributes'])
+        dic['times'] = sorted(dic['times'])
+        dic['values'] = sorted(dic['values'])
         #####
         #####
         #获得每个的元素个数，从而应用规则
